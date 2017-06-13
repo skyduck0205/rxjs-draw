@@ -1,0 +1,118 @@
+.rxjs-box {
+  padding: 10px;
+  width: 100%;
+  top: 0px;
+  left: 0px;
+  font-family: monospace;
+  background-color: #fff;
+  box-shadow: 1px 1px 3px rgba(0, 0, 0, .3);
+  box-sizing: border-box;
+}
+.rxjs-box * {
+  box-sizing: border-box;
+}
+.rxjs-tooltip {
+  z-index: 10;
+  position: fixed;
+  display: none;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 10px;
+  color: #ffffff;
+  font-family: monospace;
+  background-color: rgba(0, 0, 0, .8);
+  box-shadow: 1px 1px 3px rgba(0, 0, 0, .3);
+  pointer-events: none;
+  transform: translate(5px, 5px);
+}
+.rxjs-tooltip > div {
+  margin-top: 10px;
+}
+.rxjs-group {
+  padding: 10px;
+  border: 1px dashed #B2E3EA;
+}
+.rxjs-operators {
+  display: flex;
+  flex-direction: column-reverse;
+}
+.rxjs-operator {
+  margin-right: auto;
+  padding: 10px;
+  border: 1px dashed #EAB2BC;
+}
+.rxjs-operator + .rxjs-operator {
+  margin-bottom: 10px;
+}
+.rxjs-operator span:first-child {
+  margin-right: 20px;
+}
+.rxjs-source {
+  width: 100%;
+  padding: 10px;
+}
+* + .rxjs-group,
+* + .rxjs-operators,
+* + .rxjs-source {
+  margin-top: 10px;
+}
+.rxjs-timeline-container {
+  height: 80px;
+  overflow-x: auto;
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.rxjs-timeline {
+  position: relative;
+  display: inline-block;
+  margin: 0 30px;
+  top: 30px;
+  height: 1px;
+  background-color: #000;
+  box-shadow: 1px 1px 3px rgba(0, 0, 0, .6);
+}
+.rxjs-timeline-error:before,
+.rxjs-timeline-error:after {
+  z-index: 0;
+  content: '';
+  top: -25px;
+  right: 0;
+  position: absolute;
+  height: 50px;
+  width: 1px;
+  background-color: #F00;
+  transform: rotate(45deg);
+}
+.rxjs-timeline-error:after {
+  transform: rotate(-45deg);
+}
+.rxjs-timeline-complete:after {
+  z-index: 0;
+  content: '';
+  top: -25px;
+  right: 0;
+  position: absolute;
+  height: 50px;
+  width: 1px;
+  background-color: #000;
+}
+.rxjs-marble {
+  z-index: 1;
+  position: absolute;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  left: 0;
+  width: 40px;
+  height: 40px;
+  border: 1px solid #000;
+  border-radius: 50%;
+  background-color: #fff;
+  box-shadow: 1px 1px 3px rgba(0, 0, 0, .7);
+  transform: translate(-50%, -50%);
+}
+.rxjs-marble:hover {
+  z-index: 2;
+  box-shadow: 2px 2px 6px rgba(0, 0, 0, .7);
+}
