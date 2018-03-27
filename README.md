@@ -35,6 +35,7 @@ Rx.Observable
 ```
 
 Browse the result:
+
 ![demo](https://i.imgur.com/7Otg8Hf.gif)
 
 ## API
