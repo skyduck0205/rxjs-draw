@@ -1,16 +1,15 @@
 (function() {
+  if (!window.Rx) {
+    throw Error('\'Rx\' not found. You should have include RxJS library to continue.');
+  }
 
   var rxjsDraw = new RxjsDraw();
 
-  /** 
+  /**
    * Draw operator
    */
   function drawOperator(name) {
     var self = this;
-
-    if (!rxjsDraw) {
-      rxjsDraw = new RxjsDraw();
-    }
 
     // Grouping diagrams by root observable
     var group = rxjsDraw.findGroup(this);
@@ -21,11 +20,15 @@
 
     // Adding this observable to the source list and create operator boxes
     group.addSource(this);
+    group.drawOperatorBoxes(this);
 
     // Create source box
     var sourceBox = new SourceBox(group.dom, name);
-    sourceBox.timeline.start();
     group.addSourceBox(sourceBox);
+
+    // Creat timeline
+    sourceBox.timeline = new TimelineBox(sourceBox.dom);
+    sourceBox.timeline.start();
 
     // Handle observable
     var observable = Rx.Observable.create(function(subscriber) {
@@ -65,19 +68,20 @@
     this.tooltipDOM = null; // Tooltip element
     this.groups = []; // A list of SourceGroup
 
-    this.init = function() {
-      // Create DOM
+    this.init = function(selector) {
+      this.boxDOM = document.querySelector(selector);
       if (!this.boxDOM) {
-        this.boxDOM = createAndAppend('div', document.body, {
-          class: 'rxjs-box'
-        });
+        throw Error('Cannot find container DOM, RxjsDraw must input a valid css selector of the container.');
       }
-      if (!this.tooltipDOM) {
-        this.tooltipDOM = createAndAppend('pre', document.body, {
-          class: 'rxjs-tooltip'
-        });
-      }
+      this.boxDOM.classList.add('rxjs-box');
+      this.tooltipDOM = createAndAppend('pre', this.boxDOM, { class: 'rxjs-tooltip' });
     };
+
+    this.clean = function() {
+      this.stop();
+      this.groups = [];
+      this.boxDOM.innerHTML = '';
+    }
 
     this.stop = function() {
       for (var i = 0; i < this.groups.length; i++) {
@@ -95,8 +99,6 @@
       this.groups.push(group);
       return this.group;
     };
-
-    this.init();
   }
 
   /**
@@ -109,10 +111,7 @@
     this.sourceBoxes = [];
 
     this.init = function() {
-      // Create DOM
-      this.dom = createAndAppend('div', parentDOM, {
-        class: 'rxjs-group'
-      });
+      this.dom = createAndAppend('div', parentDOM, { class: 'rxjs-group' });
     };
 
     this.stop = function() {
@@ -123,7 +122,6 @@
 
     this.addSource = function(source) {
       this.sources.push(source);
-      this.drawOperatorBoxes(source);
     };
 
     this.addSourceBox = function(sourceBox) {
@@ -132,14 +130,19 @@
 
     this.drawOperatorBoxes = function(observable) {
       var parentObservable = observable;
-      var operatorsDOM = createAndAppend('div', this.dom, {
-        class: 'rxjs-operators'
-      });
+      var operatorsDOM = createAndAppend('div', this.dom, { class: 'rxjs-operators' });
+      // Find all the operators (which is not in the sources list) between input observable and last draw observable.
       while (parentObservable !== this.sources[this.sources.length - 2]) {
         if (parentObservable.operator) {
           createAndAppend('div', operatorsDOM, {
             class: 'rxjs-operator',
             innerHTML: parentObservable.operator.constructor.name
+          });
+        }
+        if (parentObservable === this.rootObservable) {
+          createAndAppend('div', operatorsDOM, {
+            class: 'rxjs-operator',
+            innerHTML: parentObservable.constructor.name
           });
         }
         parentObservable = parentObservable.source;
@@ -168,8 +171,6 @@
         class: 'rxjs-name',
         innerHTML: this.name
       });
-      // Creat timeline
-      this.timeline = new TimelineBox(this.dom);
     };
 
     this.init();
@@ -198,21 +199,15 @@
 
     this.init = function() {
       // Create DOM
-      this.dom = createAndAppend('div', parentDOM, {
-        class: 'rxjs-timeline-container'
-      });
+      this.dom = createAndAppend('div', parentDOM, { class: 'rxjs-timeline-container' });
       // Create bar
-      this.bar.dom = createAndAppend('div', this.dom, {
-        class: 'rxjs-timeline'
-      });
+      this.bar.dom = createAndAppend('div', this.dom, { class: 'rxjs-timeline' });
 
       this.startTime = Date.now();
       this.timerSubject = Rx.Observable
         .of(0, Rx.Scheduler.animationFrame)
         .repeat()
-        .map(function() {
-          return Date.now();
-        })
+        .map(Date.now)
         .share();
       this.scrollSubject = Rx.Observable.fromEvent(this.dom, 'scroll').share();
 
@@ -355,6 +350,17 @@
   /**
    * Utils
    */
+  /**
+   * Create a new HTMLElement and append to an exists element.
+   * @param {string} tagName - Tag name, such as 'div', 'a'
+   * @param {HTMLElement} parentDOM - To where the new element will append.
+   * @param {object} options - Element options.
+   * @param {string} options.id - Element id.
+   * @param {string|string[]} options.class - Element class string or class array.
+   * @param {string} options.innerHTML - Element innerHTML.
+   * @param {object} options.dataset - Element custom data.
+   * @return {HTMLElement} - Generated element.
+   */
   function createAndAppend(tagName, parentDOM, options) {
     var ele = document.createElement(tagName);
     if (options.id) {
@@ -379,6 +385,11 @@
     return ele;
   }
 
+  /**
+   * Find the root observable from observable chain of a input observable.
+   * @param {Observable} observable - Input observable.
+   * @return {Observable} - Root observable.
+   */
   function findRootObservable(observable) {
     var rootObservable = observable;
     while (rootObservable.source) {

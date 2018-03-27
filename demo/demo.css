@@ -1,0 +1,23 @@
+@media (min-width: 768px) {
+  .nav {
+    display: block !important;
+    position: sticky;
+    flex-wrap: nowrap;
+    top: 56px;
+    height: calc(100vh - 56px);
+    overflow-y: auto;
+  }
+}
+.nav {
+  display: none;
+}
+.nav.show {
+  display: block;
+}
+.nav-link {
+  transition: all .4s ease;
+}
+.nav-link.active {
+  background: linear-gradient(to right, #efefef 60%, transparent);
+  border-left: .5rem solid;
+}

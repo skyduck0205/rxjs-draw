@@ -2,18 +2,45 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>RxJS Draw Operator Demo</title>
-  <script src="https://unpkg.com/@reactivex/rxjs@5.0.0/dist/global/Rx.js"></script>
+
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/styles/github.min.css">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/github-markdown-css/2.10.0/github-markdown.min.css">
   <link rel="stylesheet" href="dist/rxjs-draw.min.css">
-  <style>
-    #code { line-height: 1.6; }
-  </style>
+  <link rel="stylesheet" href="demo/demo.css">
 </head>
-<body>
-  <select id="selector"></select>
-  <button id="unsubscribe">unsubscribe</button>
-  <pre id="code"></pre>  
+<body ng-app="Demo">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+    <a class="navbar-brand" href="#">RxJS Draw</a>
+    <button class="navbar-toggler" ng-click="showSideNav = !showSideNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+  </nav>
+
+  <div class="container">
+    <div class="row flex-xl-nowrap">
+      <nav class="nav flex-column col-12 col-md-3 py-3" ng-class="{ show: showSideNav }">
+        <a class="nav-link text-secondary" ui-sref="home" ui-sref-active="active">Home</a>
+        <a class="nav-link text-secondary" ng-repeat="(op, func) in operators" ui-sref="demo({ op: op })" ui-sref-active="active">
+          {{func.alias ? func.alias : op}}
+        </a>
+      </nav>
+
+      <ui-view class="col-12 col-md-9 py-3"></ui-view>
+    </div>
+  </div>
+
+  <script src="//cdnjs.cloudflare.com/ajax/libs/rxjs/5.5.7/Rx.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/highlight.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.9/angular.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-router/1.0.3/angular-ui-router.min.js"></script>
+  <script src="//pc035860.github.io/angular-highlightjs/angular-highlightjs.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/showdown/1.8.6/showdown.min.js"></script>
+
   <script src="dist/rxjs-draw.min.js"></script>
+  <script src="demo/demo-functions.js"></script>
   <script src="demo/demo.js"></script>
 </body>
 </html>

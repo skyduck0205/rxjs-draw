@@ -9,7 +9,7 @@ gulp.task('serve', ['jshint'], function() {
     server: '.'
   });
   gulp.watch(['src/**/*.js', 'demo/**/*.js'], ['jshint']);
-  gulp.watch(['src/**/*.*', 'demo/**/*.*', 'index.html'])
+  gulp.watch(['src/**/*.*', 'demo/**/*.*', '*.html'])
     .on('change', $.browserSync.reload);
 });
 

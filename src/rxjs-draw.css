@@ -1,21 +1,17 @@
 .rxjs-box {
+  position: relative;
   padding: 10px;
   width: 100%;
-  top: 0px;
-  left: 0px;
   font-family: monospace;
-  background-color: #fff;
-  box-shadow: 1px 1px 3px rgba(0, 0, 0, .3);
   box-sizing: border-box;
 }
 .rxjs-box * {
   box-sizing: border-box;
 }
 .rxjs-tooltip {
-  z-index: 10;
+  z-index: 100;
   position: fixed;
   display: none;
-  box-sizing: border-box;
   margin: 0;
   padding: 10px;
   color: #ffffff;
@@ -51,7 +47,7 @@
   width: 100%;
   padding: 10px;
 }
-* + .rxjs-group,
+.rxjs-group + .rxjs-group,
 * + .rxjs-operators,
 * + .rxjs-source {
   margin-top: 10px;
